@@ -1,0 +1,28 @@
+# This file is a template, and might need editing before it works on your project.
+# Full project: https://gitlab.com/pages/plain-html
+image: node:12.4.0
+
+pages:
+  stage: deploy
+  cache: 
+    paths: 
+      - .yarn-cache/
+  script:
+    - curl -o- -L https://yarnpkg.com/install.sh | bash
+    - export PATH="$HOME/.yarn/bin:$PATH"
+    - yarn config set cache-folder $(pwd)/.yarn-cache
+    - node -v
+    - yarn --version
+    - yarn install
+    - npm install --global webpack
+    - yarn build
+    - mkdir .public
+    - cp -r ./build/* .public
+    - rm -rf public
+    - mv .public public
+    - ls -la public
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
